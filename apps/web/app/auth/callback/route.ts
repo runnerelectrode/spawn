@@ -3,8 +3,13 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
+
+  // Railway proxies internally via localhost — use forwarded headers for the real public origin
+  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
+  const proto = request.headers.get("x-forwarded-proto") ?? "https";
+  const origin = host ? `${proto}://${host}` : process.env.NEXT_PUBLIC_SUPABASE_URL!.replace("supabase.co", "spawnbot.xyz");
 
   if (code) {
     const cookieStore = await cookies();
