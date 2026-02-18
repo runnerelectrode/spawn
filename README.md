@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="apps/web/public/logo.png" width="120" alt="Spawn logo" />
+</p>
+
 # Spawn — One-Click AI Deploy Platform
 
 Push code. Claude configures it. Spawn deploys it. The self-healer fixes it.
