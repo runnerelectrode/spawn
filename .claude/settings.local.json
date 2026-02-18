@@ -18,7 +18,9 @@
       "Bash(git commit:*)",
       "Bash(gh repo create:*)",
       "Bash(claude mcp add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "mcp__railway-mcp-server__deploy",
+      "mcp__railway-mcp-server__set-variables"
     ]
   }
 }

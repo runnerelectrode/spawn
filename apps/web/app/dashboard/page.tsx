@@ -15,9 +15,19 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) { router.push("/"); return; }
-      setUserId(data.session.user.id);
+      const uid = data.session.user.id;
+      setUserId(uid);
+
+      // Check if API key is set
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/settings/apikey/status`,
+        { headers: { "x-user-id": uid } }
+      );
+      const { hasKey } = await res.json();
+      if (!hasKey) { router.push("/settings"); return; }
+
       getApps().then((a) => { setApps(a); setLoading(false); });
     });
 
@@ -50,6 +60,12 @@ export default function DashboardPage() {
               + Connect repo
             </a>
           )}
+          <a
+            href="/settings"
+            className="text-sm text-[#555] hover:text-white transition"
+          >
+            API key
+          </a>
           <button
             onClick={signOut}
             className="text-sm text-[#555] hover:text-white transition"

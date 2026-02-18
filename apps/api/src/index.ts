@@ -5,6 +5,7 @@ import { githubRoutes } from "./routes/github";
 import { deployRoutes } from "./routes/deploy";
 import { appsRoutes } from "./routes/apps";
 import { logsRoutes } from "./routes/logs";
+import { settingsRoutes } from "./routes/settings";
 
 const app = new Hono();
 
@@ -23,6 +24,7 @@ app.route("/github", githubRoutes);
 app.route("/deploy", deployRoutes);
 app.route("/apps", appsRoutes);
 app.route("/logs", logsRoutes);
+app.route("/settings", settingsRoutes);
 
 const port = parseInt(process.env.PORT ?? "3001");
 console.log(`Spawn API running on port ${port}`);

@@ -137,6 +137,18 @@ async function healWithClaude(app: any) {
   await db.from("apps").update({ status: "healing" }).eq("id", app.id);
 
   try {
+    // Get user's API key
+    const { data: userRecord } = await db
+      .from("users")
+      .select("anthropic_api_key")
+      .eq("id", app.user_id)
+      .single();
+
+    if (!userRecord?.anthropic_api_key) {
+      await db.from("apps").update({ status: "crashed" }).eq("id", app.id);
+      return;
+    }
+
     // Get crash logs
     const crashLogs = await getMachineLogs(app.fly_app_name, app.fly_machine_id, 200);
 
@@ -166,7 +178,7 @@ async function healWithClaude(app: any) {
     const snapshot = await buildRepoSnapshot(repoDir);
 
     // Ask Claude what to do
-    const healAction = await diagnoseCrash(snapshot, crashLogs, currentDockerfile, app.ram_mb);
+    const healAction = await diagnoseCrash(snapshot, crashLogs, currentDockerfile, app.ram_mb, userRecord.anthropic_api_key);
     console.log(`[healer] Claude says: ${healAction.type} — ${healAction.reason}`);
 
     await logHealEvent(

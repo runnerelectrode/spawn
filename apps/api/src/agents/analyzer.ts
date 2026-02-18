@@ -1,7 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { AnalysisResult, Framework } from "@spawn/shared";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+function getClient(apiKey: string) {
+  return new Anthropic({ apiKey });
+}
 
 interface RepoSnapshot {
   fileTree: string;          // output of `find . -type f | head -100`
@@ -104,7 +106,8 @@ Rules:
 - If logs show a transient error (network timeout, db connection): type=restart
 - If you cannot determine the cause: type=notify_only`;
 
-export async function analyzeRepo(snapshot: RepoSnapshot): Promise<AnalysisResult> {
+export async function analyzeRepo(snapshot: RepoSnapshot, apiKey: string): Promise<AnalysisResult> {
+  const client = getClient(apiKey);
   const message = await client.messages.create({
     model: "claude-opus-4-6",
     max_tokens: 4096,
@@ -126,8 +129,10 @@ export async function diagnoseCrash(
   snapshot: RepoSnapshot,
   crashLogs: string,
   currentDockerfile: string,
-  currentRamMb: number
+  currentRamMb: number,
+  apiKey: string
 ) {
+  const client = getClient(apiKey);
   const message = await client.messages.create({
     model: "claude-opus-4-6",
     max_tokens: 2048,

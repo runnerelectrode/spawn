@@ -32,6 +32,18 @@ export const deployWorker = new Worker<DeployJobPayload>(
     const { data: app } = await db.from("apps").select("*").eq("id", app_id).single();
     if (!app) throw new Error(`App ${app_id} not found`);
 
+    // Fetch user's API key
+    const { data: userRecord } = await db
+      .from("users")
+      .select("anthropic_api_key")
+      .eq("id", app.user_id)
+      .single();
+
+    const anthropicKey = userRecord?.anthropic_api_key;
+    if (!anthropicKey) {
+      throw new Error("No Anthropic API key set. Please add your Claude API key in Settings.");
+    }
+
     try {
       // ── Step 1: Update status ────────────────────────────────────────────
       await db.from("deployments").update({ status: "running" }).eq("id", deployment_id);
@@ -46,7 +58,7 @@ export const deployWorker = new Worker<DeployJobPayload>(
       await db.from("apps").update({ status: "analyzing" }).eq("id", app_id);
       await log(deployment_id, "Analyzing repo with Claude Opus 4.6...");
       const snapshot = await buildRepoSnapshot(repoDir);
-      const analysis = await analyzeRepo(snapshot);
+      const analysis = await analyzeRepo(snapshot, anthropicKey);
 
       await log(deployment_id, `Framework: ${analysis.framework} | RAM: ${analysis.ram_mb}MB | Port: ${analysis.port}`);
       await log(deployment_id, `Summary: ${analysis.summary}`);
