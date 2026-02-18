@@ -1,0 +1,30 @@
+{
+  "name": "@spawn/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun run dist/index.js",
+    "worker": "bun run src/workers/index.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "@octokit/auth-app": "^8.2.0",
+    "@octokit/rest": "^21.1.0",
+    "@octokit/webhooks": "^13.4.0",
+    "@supabase/supabase-js": "^2.47.0",
+    "bullmq": "^5.34.0",
+    "hono": "^4.7.0",
+    "ioredis": "^5.4.2",
+    "node-cron": "^3.0.3",
+    "resend": "^4.1.2",
+    "simple-git": "^3.27.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/node-cron": "^3.0.11",
+    "typescript": "^5.7.0"
+  }
+}

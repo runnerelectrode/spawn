@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app:*)",
+      "Bash(bun install:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(curl:*)",
+      "Bash(bash)",
+      "Bash(export PATH=\"$HOME/.bun/bin:$PATH\")",
+      "Bash(bun run tsc:*)",
+      "Bash(bun add:*)",
+      "Bash(lsof:*)",
+      "Bash(ps:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
