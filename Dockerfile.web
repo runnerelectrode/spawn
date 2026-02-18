@@ -1,0 +1,18 @@
+FROM oven/bun:1 AS base
+WORKDIR /app
+
+# Install dependencies
+COPY package.json bun.lock ./
+COPY packages/shared/package.json ./packages/shared/
+COPY apps/web/package.json ./apps/web/
+RUN bun install --frozen-lockfile
+
+# Copy source and build
+COPY packages/shared ./packages/shared
+COPY apps/web ./apps/web
+
+WORKDIR /app/apps/web
+RUN bun run build
+
+EXPOSE 3000
+CMD ["bun", "run", "start"]
